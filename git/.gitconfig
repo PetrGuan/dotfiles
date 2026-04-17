@@ -1,0 +1,25 @@
+[user]
+	name = Petr Guan
+	email = guanjun_ksjs@outlook.com
+
+[init]
+	defaultBranch = main
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+# Load work identity + Microsoft-specific configs only inside work directories.
+# ~/.gitconfig-work is NOT synced via the public dotfiles repo.
+[includeIf "gitdir:~/Documents/work/"]
+	path = ~/.gitconfig-work
+[includeIf "gitdir:/Volumes/Office/"]
+	path = ~/.gitconfig-work
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

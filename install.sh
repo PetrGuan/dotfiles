@@ -44,6 +44,7 @@ link() {
 
 link "$REPO_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 link "$REPO_DIR/ghostty/config"       "$GHOSTTY_CONFIG"
+link "$REPO_DIR/git/.gitconfig"       "$HOME/.gitconfig"
 
 echo ""
 echo "Done. Reload Ghostty (Cmd+Shift+,) and restart Claude Code for changes to take effect."
