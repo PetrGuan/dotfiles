@@ -9,6 +9,7 @@ My personal config files for macOS, kept under version control so a new machine 
 | `claude/settings.json` | `~/.claude/settings.json` | Claude Code settings — model, plugins, status line, hooks (terminal bell on Stop / Notification / PermissionRequest) |
 | `ghostty/config` | `~/Library/Application Support/com.mitchellh.ghostty/config` (macOS)<br>`~/.config/ghostty/config` (Linux) | Ghostty terminal config — tab behavior, bell-features for per-tab attention indicator |
 | `git/.gitconfig` | `~/.gitconfig` | Personal git identity + universal settings + `includeIf` rules that overlay a separate `~/.gitconfig-work` when inside work directories |
+| `zsh/zshrc` | sourced from `~/.zshrc` (not symlinked) | Oh-My-Zsh setup + universal tool hooks. Deliberately not symlinked so tools like `olm doctor` that inject into `~/.zshrc` can't pollute this repo |
 
 ## Install
 
@@ -57,6 +58,27 @@ Default → personal. Inside those paths → work identity + work credential hel
     name = <work name>
     email = <work email>
 ```
+
+## Zsh setup (stub pattern, not symlinked)
+
+`~/.zshrc` stays as a **real file** on each machine — it's not symlinked into this repo. Tools like Microsoft's `olm doctor` want to inject PATH-management lines at the top of `~/.zshrc`; a symlinked `~/.zshrc` would route those edits straight into the public repo. The stub pattern sidesteps the whole problem.
+
+The stub looks like this and is created automatically by `install.sh` on a fresh machine:
+
+```zsh
+# Anything a tool (olm doctor, asdf, etc.) injects lands ABOVE this line
+# and runs first — exactly where those tools need it to run.
+
+source "$HOME/Documents/GitHub/dotfiles/zsh/zshrc"
+
+# Optional machine/work-specific overlay (not tracked in the public repo)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+```
+
+- **`zsh/zshrc` in this repo** — universal stuff: oh-my-zsh bootstrap, `vcpkg`, `~/.local/bin` env
+- **`~/.zshrc.local` (not tracked)** — machine- or work-specific PATH entries, aliases, env vars. Create by hand on each machine.
+
+`install.sh` won't overwrite an existing `~/.zshrc`; if one exists already, it checks whether the stub source line is present and prints guidance otherwise.
 
 ## Adding more configs
 

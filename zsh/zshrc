@@ -1,0 +1,15 @@
+# Public dotfiles zshrc — sourced from ~/.zshrc (not symlinked there, so
+# tools like olm doctor that inject into ~/.zshrc can't pollute this repo).
+
+# === Oh-My-Zsh ===
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+plugins=(git)
+source "$ZSH/oh-my-zsh.sh"
+
+# === Tools ===
+# uv / anything else that drops binaries in ~/.local/bin
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+# vcpkg — C++ package manager
+export VCPKG_ROOT="$HOME/vcpkg"

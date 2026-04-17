@@ -46,5 +46,25 @@ link "$REPO_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 link "$REPO_DIR/ghostty/config"       "$GHOSTTY_CONFIG"
 link "$REPO_DIR/git/.gitconfig"       "$HOME/.gitconfig"
 
+# ~/.zshrc is deliberately NOT symlinked — tools like olm doctor inject
+# lines into it and would pollute this repo. Instead, create a minimal
+# bootstrap ~/.zshrc on fresh machines that sources the repo's zshrc.
+if [ ! -e "$HOME/.zshrc" ]; then
+  cat > "$HOME/.zshrc" <<STUB
+# Public dotfiles baseline
+source "\$HOME/Documents/GitHub/dotfiles/zsh/zshrc"
+
+# Optional machine/work-specific overlay (not tracked in the public repo)
+[ -f "\$HOME/.zshrc.local" ] && source "\$HOME/.zshrc.local"
+STUB
+  echo "create: $HOME/.zshrc (bootstrap stub sourcing the repo)"
+else
+  if grep -q "dotfiles/zsh/zshrc" "$HOME/.zshrc" 2>/dev/null; then
+    echo "ok:   $HOME/.zshrc already sources the repo"
+  else
+    echo "skip: $HOME/.zshrc exists — add 'source $REPO_DIR/zsh/zshrc' manually (see README)"
+  fi
+fi
+
 echo ""
 echo "Done. Reload Ghostty (Cmd+Shift+,) and restart Claude Code for changes to take effect."
