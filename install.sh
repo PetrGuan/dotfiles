@@ -75,4 +75,9 @@ if command -v brew >/dev/null 2>&1; then
   fi
   echo ""
 fi
+if [ -f "$REPO_DIR/claude/skills.json" ]; then
+  echo "To restore Claude Code skills listed in claude/skills.json:"
+  echo "  $REPO_DIR/claude/restore-skills.sh"
+  echo ""
+fi
 echo "Done. Reload Ghostty (Cmd+Shift+,) and restart Claude Code for changes to take effect."

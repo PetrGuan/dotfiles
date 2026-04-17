@@ -11,6 +11,7 @@ My personal config files for macOS, kept under version control so a new machine 
 | `git/.gitconfig` | `~/.gitconfig` | Personal git identity + universal settings + `includeIf` rules that overlay a separate `~/.gitconfig-work` when inside work directories |
 | `zsh/zshrc` | sourced from `~/.zshrc` (not symlinked) | Oh-My-Zsh setup + universal tool hooks. Deliberately not symlinked so tools like `olm doctor` that inject into `~/.zshrc` can't pollute this repo |
 | `Brewfile` | run via `brew bundle --file=...` | Homebrew packages — personal / universal CLI tools. Work-only packages live in a separate `~/.Brewfile.work` |
+| `claude/skills.json` + `claude/restore-skills.sh` | reconstitutes `~/.agents/skills/` + `~/.claude/skills/` | Manifest of installed Claude Code skills (name, source repo, path inside repo). Restore script clones each source and populates on a new machine |
 
 ## Install
 
@@ -97,6 +98,20 @@ brew bundle --file=~/.Brewfile.work                         # work (if the file 
 > ⚠️ **Not managed by brew.** Microsoft's VFS-enabled git and its telemetry service install as `.pkg` files (`com.git.pkg`, `com.git-ecosystem.git-telemetry-service`), not through Homebrew. Neither Brewfile will reinstall them on a new machine — download the installers from [microsoft/git releases](https://github.com/microsoft/git/releases) (or the internal equivalent) manually. `git-credential-manager` *is* brew-managed via cask.
 
 To add new packages, install them manually first, then append the line to the appropriate Brewfile. To regenerate from scratch, `brew bundle dump --file=<path> --force` dumps everything currently installed — but you'll have to re-split personal vs work by hand.
+
+## Claude Code skills
+
+Skills installed via `/find-skills` land in `~/.agents/skills/<name>/` and get symlinked into `~/.claude/skills/<name>` so Claude Code picks them up. `~/.agents/.skill-lock.json` is a local lock file that records, for each skill, the source GitHub repo and path within that repo.
+
+Rather than sync the skill files themselves (they're third-party content from public repos, would bloat this repo), this dotfiles setup syncs a **manifest** and a **restore script**:
+
+- **`claude/skills.json`** — pruned subset of the lock file: `{name → {source, sourceUrl, skillPath}}` per skill, no UI state, no per-machine hashes
+- **`claude/restore-skills.sh`** — on a new machine, reads `skills.json`, shallow-clones each source repo, copies the skill directory into `~/.agents/skills/<name>/`, and symlinks into `~/.claude/skills/`. Idempotent; `--force` to refresh
+- **`claude/update-skills-manifest.sh`** — on the primary machine, after installing/removing skills via `/find-skills`, regenerates `claude/skills.json` from the local lock file. Run → review `git diff` → commit in a PR
+
+Workflow on a new machine: `git clone` → `./install.sh` → `./claude/restore-skills.sh`.
+
+Workflow when you install new skills: `/find-skills` in Claude Code (as usual) → later run `./claude/update-skills-manifest.sh` → commit the diff so the new machine will get the same skill next time.
 
 ## Adding more configs
 
