@@ -67,4 +67,12 @@ else
 fi
 
 echo ""
+if command -v brew >/dev/null 2>&1; then
+  echo "To install brew packages listed in Brewfile:"
+  echo "  brew bundle --file=$REPO_DIR/Brewfile"
+  if [ -f "$HOME/.Brewfile.work" ]; then
+    echo "  brew bundle --file=$HOME/.Brewfile.work    # work-only packages"
+  fi
+  echo ""
+fi
 echo "Done. Reload Ghostty (Cmd+Shift+,) and restart Claude Code for changes to take effect."
