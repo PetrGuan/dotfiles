@@ -10,6 +10,7 @@ My personal config files for macOS, kept under version control so a new machine 
 | `ghostty/config` | `~/Library/Application Support/com.mitchellh.ghostty/config` (macOS)<br>`~/.config/ghostty/config` (Linux) | Ghostty terminal config — tab behavior, bell-features for per-tab attention indicator |
 | `git/.gitconfig` | `~/.gitconfig` | Personal git identity + universal settings + `includeIf` rules that overlay a separate `~/.gitconfig-work` when inside work directories |
 | `zsh/zshrc` | sourced from `~/.zshrc` (not symlinked) | Oh-My-Zsh setup + universal tool hooks. Deliberately not symlinked so tools like `olm doctor` that inject into `~/.zshrc` can't pollute this repo |
+| `Brewfile` | run via `brew bundle --file=...` | Homebrew packages — personal / universal CLI tools. Work-only packages live in a separate `~/.Brewfile.work` |
 
 ## Install
 
@@ -79,6 +80,23 @@ source "$HOME/Documents/GitHub/dotfiles/zsh/zshrc"
 - **`~/.zshrc.local` (not tracked)** — machine- or work-specific PATH entries, aliases, env vars. Create by hand on each machine.
 
 `install.sh` won't overwrite an existing `~/.zshrc`; if one exists already, it checks whether the stub source line is present and prints guidance otherwise.
+
+## Brew packages (personal vs work split)
+
+Two Brewfiles, same split pattern as `.gitconfig` / `.zshrc`:
+
+- **`Brewfile`** in this repo — personal / universal CLI tools (git, node, python, ripgrep, …)
+- **`~/.Brewfile.work`** on each machine (not tracked) — work-only packages: Microsoft VFS git tap, `azure-cli`, `git-credential-manager`, iOS / .NET / Swift toolchains used for Office client work
+
+Install either:
+```sh
+brew bundle --file=~/Documents/GitHub/dotfiles/Brewfile    # personal
+brew bundle --file=~/.Brewfile.work                         # work (if the file exists)
+```
+
+> ⚠️ **Not managed by brew.** Microsoft's VFS-enabled git and its telemetry service install as `.pkg` files (`com.git.pkg`, `com.git-ecosystem.git-telemetry-service`), not through Homebrew. Neither Brewfile will reinstall them on a new machine — download the installers from [microsoft/git releases](https://github.com/microsoft/git/releases) (or the internal equivalent) manually. `git-credential-manager` *is* brew-managed via cask.
+
+To add new packages, install them manually first, then append the line to the appropriate Brewfile. To regenerate from scratch, `brew bundle dump --file=<path> --force` dumps everything currently installed — but you'll have to re-split personal vs work by hand.
 
 ## Adding more configs
 
