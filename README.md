@@ -6,7 +6,7 @@ My personal config files for macOS, kept under version control so a new machine 
 
 | Path in repo | Links to | Purpose |
 |---|---|---|
-| `claude/settings.json` | `~/.claude/settings.json` | Claude Code settings — model, plugins, status line, hooks (terminal bell on Stop / Notification) |
+| `claude/settings.json` | `~/.claude/settings.json` | Claude Code settings — model, plugins, status line, hooks (terminal bell on Stop / Notification / PermissionRequest) |
 | `ghostty/config` | `~/Library/Application Support/com.mitchellh.ghostty/config` (macOS)<br>`~/.config/ghostty/config` (Linux) | Ghostty terminal config — tab behavior, bell-features for per-tab attention indicator |
 
 ## Install
@@ -26,7 +26,13 @@ After installing:
 
 ## How the Ghostty + Claude Code bell works together
 
-Claude Code hooks fire on `Stop` (turn ended) and `Notification` (waiting on user input). Each one runs `printf '\a' > /dev/tty`, which sends a BEL character to the terminal. Ghostty's `bell-features = title,attention` turns that BEL into a per-tab indicator and a macOS dock bounce — no sound. With several Claude Code sessions open across tabs, inactive ones light up when they finish or need you.
+Claude Code hooks fire on three events — each runs `printf '\a' > /dev/tty`, which sends a BEL character to the terminal:
+
+- `Stop` — the model finished its turn
+- `PermissionRequest` — fires immediately on every "X to proceed" permission prompt
+- `Notification` — catches idle-timeout notifications that `PermissionRequest` doesn't cover
+
+Ghostty's `bell-features = title,attention` turns that BEL into a per-tab indicator and a macOS dock bounce — no sound. With several Claude Code sessions open across tabs, inactive ones light up when they finish or need you.
 
 To remove the Stop bell (only get pinged on input prompts), delete the `Stop` entry in `claude/settings.json`.
 
