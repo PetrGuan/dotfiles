@@ -80,4 +80,9 @@ if [ -f "$REPO_DIR/claude/skills.json" ]; then
   echo "  $REPO_DIR/claude/restore-skills.sh"
   echo ""
 fi
+if [ -f "$REPO_DIR/terminal/set-font.applescript" ]; then
+  echo "To apply Maple Mono NF CN to every Terminal.app profile (after brew bundle):"
+  echo "  osascript $REPO_DIR/terminal/set-font.applescript"
+  echo ""
+fi
 echo "Done. Reload Ghostty (Cmd+Shift+,) and restart Claude Code for changes to take effect."

@@ -48,6 +48,9 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
+# === 字体 ===
+font-family = Maple Mono NF CN
+
 # === Tab 配置 ===
 # 新窗口默认以 tab 打开（而不是新 window）
 window-new-tab-position = end

@@ -10,7 +10,8 @@ My personal config files for macOS, kept under version control so a new machine 
 | `ghostty/config` | `~/Library/Application Support/com.mitchellh.ghostty/config` (macOS)<br>`~/.config/ghostty/config` (Linux) | Ghostty terminal config — tab behavior, bell-features for per-tab attention indicator |
 | `git/.gitconfig` | `~/.gitconfig` | Personal git identity + universal settings + `includeIf` rules that overlay a separate `~/.gitconfig-work` when inside work directories |
 | `zsh/zshrc` | sourced from `~/.zshrc` (not symlinked) | Oh-My-Zsh setup + universal tool hooks. Deliberately not symlinked so tools like `olm doctor` that inject into `~/.zshrc` can't pollute this repo |
-| `Brewfile` | run via `brew bundle --file=...` | Homebrew packages — personal / universal CLI tools. Work-only packages live in a separate `~/.Brewfile.work` |
+| `Brewfile` | run via `brew bundle --file=...` | Homebrew packages — personal / universal CLI tools + `font-maple-mono-nf-cn` cask. Work-only packages live in a separate `~/.Brewfile.work` |
+| `terminal/set-font.applescript` | run manually with `osascript` | Sets Maple Mono NF CN on every Terminal.app profile. Not symlinked — Terminal.app stores fonts as archived NSFont blobs in a binary plist, which doesn't round-trip through git |
 | `claude/skills.json` + `claude/restore-skills.sh` | reconstitutes `~/.agents/skills/` + `~/.claude/skills/` | Manifest of installed Claude Code skills (name, source repo, path inside repo). Restore script clones each source and populates on a new machine |
 
 ## Install
@@ -25,8 +26,12 @@ cd ~/dotfiles
 
 After installing:
 
-- Reload Ghostty with `Cmd+Shift+,` (or restart it) so `bell-features` takes effect
+- Reload Ghostty with `Cmd+Shift+,` (or restart it) so `bell-features` and `font-family` take effect
 - Restart Claude Code so the new hooks load
+- Apply Terminal.app font (once the `font-maple-mono-nf-cn` cask is installed via `brew bundle`):
+  ```sh
+  osascript terminal/set-font.applescript
+  ```
 
 ## How the Ghostty + Claude Code bell works together
 
